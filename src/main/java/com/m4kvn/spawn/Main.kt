@@ -19,9 +19,6 @@ class Main {
     @Listener
     fun onGameStarted(event: GameStartedServerEvent) {
         startKoin(listOf(MainModule(this)), logger = EmptyLogger())
-        val command = CommandSpec.builder()
-            .executor(SpawnCommand())
-            .build()
-        Sponge.getCommandManager().register(this, command, "spawn")
+        SpawnCommand.register(this)
     }
 }

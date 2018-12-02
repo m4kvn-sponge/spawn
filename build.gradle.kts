@@ -19,6 +19,7 @@ val embed by configurations.creating {
 
 dependencies {
     embed(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation("org.spongepowered:spongeapi:7.0.0")
     implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")
     implementation("io.reactivex.rxjava2:rxjava:2.2.4")
@@ -36,3 +37,11 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
+
+val copyToServer by tasks.creating(Copy::class.java) {
+    from("build/libs/spawn-$version.jar")
+    into("server/data/mods/")
+}
+
+val build by tasks
+build.finalizedBy(copyToServer)
