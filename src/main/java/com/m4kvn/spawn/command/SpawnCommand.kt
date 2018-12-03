@@ -24,14 +24,17 @@ class SpawnCommand : CommandExecutor, KoinComponent {
     private val plugin: Main by inject()
 
     companion object {
-        const val delaySecond = 3
+        private const val PERMISSION_MAIN = "spawn.command.spawn.main"
+        private const val PERMISSION_SET = "spawn.command.spawn.set"
+        private const val DELAY = 3
 
         private fun newSpec() =
             CommandSpec.builder()
+                .permission(PERMISSION_MAIN)
                 .executor(SpawnCommand())
                 .arguments(
                     GenericArguments.flags()
-                        .flag("s")
+                        .permissionFlag(PERMISSION_SET, "s")
                         .buildWith(GenericArguments.none())
                 )
                 .build()
@@ -62,7 +65,7 @@ class SpawnCommand : CommandExecutor, KoinComponent {
             .subscribeOn(Schedulers.from(executer))
             .observeOn(Schedulers.from(executer))
             .subscribeBy {
-                val num = delaySecond - it
+                val num = DELAY - it
                 if (num > 0) {
                     val text = Text.builder("You warp to spawn in ")
                         .append(Text.builder("$num").color(TextColors.AQUA).build())

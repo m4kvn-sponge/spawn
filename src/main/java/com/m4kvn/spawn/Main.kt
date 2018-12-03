@@ -2,23 +2,33 @@ package com.m4kvn.spawn
 
 import com.m4kvn.spawn.command.SpawnCommand
 import com.m4kvn.spawn.di.MainModule
-import org.koin.log.EmptyLogger
-import org.koin.standalone.StandAloneContext.startKoin
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.command.spec.CommandSpec
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.slf4j.Logger
 import org.spongepowered.api.event.Listener
-import org.spongepowered.api.event.game.state.GameStartedServerEvent
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent
+import org.spongepowered.api.event.game.state.GameStartingServerEvent
 import org.spongepowered.api.plugin.Plugin
+import javax.inject.Inject
 
 @Plugin(
     id = "spawn",
     name = "Spawn"
 )
-class Main {
+class Main : KoinComponent {
+
+    @Inject
+    lateinit var logger: Logger
 
     @Listener
-    fun onGameStarted(event: GameStartedServerEvent) {
-        startKoin(listOf(MainModule(this)), logger = EmptyLogger())
+    fun onGamePreInitialization(event: GamePreInitializationEvent) {
+        logger.debug("onGamePreInitialization(event=$event)")
+        loadKoinModules(listOf(MainModule(this)))
+    }
+
+    @Listener
+    fun onGameStartingServer(event: GameStartingServerEvent) {
+        logger.debug("onGameStartingServer(event=$event)")
         SpawnCommand.register(this)
     }
 }

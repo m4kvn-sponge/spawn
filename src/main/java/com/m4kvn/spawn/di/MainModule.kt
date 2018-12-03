@@ -6,18 +6,21 @@ import org.koin.core.KoinContext
 import org.koin.dsl.context.ModuleDefinition
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
-import org.koin.dsl.path.Path
 
 class MainModule(
     private val plugin: Main
 ) : Module {
 
+    companion object {
+        private const val PATH = "spawn"
+    }
+
     override fun invoke(context: KoinContext): ModuleDefinition =
         module { invoke(this) }.invoke(context)
 
     operator fun invoke(moduleDefinition: ModuleDefinition) =
-            moduleDefinition.module(Path.ROOT) {
-                single { plugin }
-                single { Messenger() }
-            }
+        moduleDefinition.module(PATH) {
+            single { plugin }
+            single { Messenger() }
+        }
 }
